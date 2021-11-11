@@ -1,4 +1,4 @@
-export type ItemId = string;
+export type ItemId = number;
 export interface ItemData {
   id: ItemId;
   description: string;

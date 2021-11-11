@@ -84,10 +84,9 @@ export default function App() {
   });
 
   const addValue = (description: string, content: string) => {
-    const timestamp = new Date().toISOString();
     const maxIndex = items.length - 1;
     const newItem: ItemData = {
-      id: timestamp,
+      id: Date.now(),
       description,
       content,
       index: maxIndex + 1,
