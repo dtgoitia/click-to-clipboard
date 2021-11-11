@@ -13,10 +13,10 @@
   "devDependencies": {
     "@types/copy-webpack-plugin": "^8.0.1",
     "@types/node": "^16.11.7",
-    "@types/react-dom": "^17.0.11",
     "@types/react": "^17.0.34",
-    "@types/webpack-dev-server": "^4.3.1",
+    "@types/react-dom": "^17.0.11",
     "@types/webpack": "^5.28.0",
+    "@types/webpack-dev-server": "^4.3.1",
     "copy-webpack-plugin": "^9.0.1",
     "ts-loader": "^9.2.6",
     "ts-node": "^10.4.0",
@@ -29,7 +29,17 @@
     "webpack-dev-server": "^4.4.0"
   },
   "dependencies": {
+    "@trivago/prettier-plugin-sort-imports": "^3.1.1",
+    "@types/styled-components": "^5.1.15",
+    "prettier": "^2.4.1",
     "react": "^17.0.2",
-    "react-dom": "^17.0.2"
+    "react-dom": "^17.0.2",
+    "semantic-ui-css": "^2.4.1",
+    "semantic-ui-react": "^2.0.4",
+    "styled-components": "^5.3.3",
+    "stylelint": "^14.0.1",
+    "stylelint-config-recommended": "^6.0.0",
+    "stylelint-config-styled-components": "^0.1.1",
+    "stylelint-processor-styled-components": "^1.10.0"
   }
 }

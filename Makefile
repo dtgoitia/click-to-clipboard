@@ -7,7 +7,7 @@ FIREFOX_PROFILE_PATH:=$(ROOT_DIR)/$(FIREFOX_PROFILE_DIR)
 run:
 	FIREFOX_PROFILE_PATH=$(FIREFOX_PROFILE_PATH) \
 		npm run dev
-	scripts/clean_up_changes_to_firefox_profile.sh $(FIREFOX_PROFILE_PATH)
+	# scripts/clean_up_changes_to_firefox_profile.sh $(FIREFOX_PROFILE_PATH)
 
 build:
 	npm run build
