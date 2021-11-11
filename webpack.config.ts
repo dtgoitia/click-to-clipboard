@@ -11,7 +11,7 @@ const firefoxProfilePath = process.env["FIREFOX_PROFILE_PATH"];
 
 const config: webpack.Configuration = {
   mode: "production",
-  entry: "./src/index.ts",
+  entry: "./src/index.tsx",
   module: {
     rules: [
       {

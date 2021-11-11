@@ -1,7 +1,5 @@
 // Declare any missing types here
 
-type TODO = unknown;
-
 declare namespace browser.contextMenus {
   // https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/menus/create
   function create(
