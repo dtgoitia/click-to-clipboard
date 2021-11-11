@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 
 import AddItemForm from "./components/AddItemForm";
 import CopyableItems from "./components/CopyableItems";
 import { ItemData, ItemId } from "./domain";
+import repository from "./persistence";
 
 const MOCK_DATA: ItemData[] = [
   {
@@ -66,6 +67,12 @@ export default function App() {
   const [items, setItems] = useState([]);
   const [lastClicked, setLastClicked] = useState<ItemId | null>(null);
 
+  useEffect(() => {
+    repository.readItems().then(storedItems => {
+      setItems(storedItems);
+    });
+  }, []);
+
   const addValue = (description: string, content: string) => {
     const timestamp = new Date().toISOString();
     const maxIndex = items.length - 1;
@@ -80,6 +87,11 @@ export default function App() {
   };
 
   const itemsSortedByIndex = items.concat().sort(itemSorter);
+
+  useEffect(() => {
+    // back-up stored items
+    repository.writeItems(itemsSortedByIndex);
+  }, [items]);
 
   return (
     <Page>
