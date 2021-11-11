@@ -23,5 +23,5 @@
     }
   },
 
-  "permissions": ["clipboard-write", "storage"]
+  "permissions": ["clipboardWrite", "storage", "clipboardRead"]
 }

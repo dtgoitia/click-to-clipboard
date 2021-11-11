@@ -1,25 +1,11 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 
+import { readClipboard } from "./clipboard";
 import AddItemForm from "./components/AddItemForm";
 import CopyableItems from "./components/CopyableItems";
 import { ItemData, ItemId } from "./domain";
 import repository from "./persistence";
-
-const MOCK_DATA: ItemData[] = [
-  {
-    id: "random-hash1",
-    description: "Algo Q1",
-    content: "Algo Q1 text",
-    index: 1,
-  },
-  {
-    id: "random-hash2",
-    description: "Algo Q2",
-    content: "Algo Q2 text",
-    index: 0,
-  },
-];
 
 enum SortAction {
   KeepOrder = -1,
@@ -64,14 +50,38 @@ const Footer = styled.div`
 `;
 
 export default function App() {
-  const [items, setItems] = useState([]);
+  const [items, setItems] = useState<ItemData[]>([]);
   const [lastClicked, setLastClicked] = useState<ItemId | null>(null);
+  const [currentClipboard, setCurrentClipboard] = useState<string>("");
 
   useEffect(() => {
     repository.readItems().then(storedItems => {
       setItems(storedItems);
     });
   }, []);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      readClipboard().then(text => {
+        if (text === currentClipboard) {
+          return;
+        }
+
+        setCurrentClipboard(text);
+
+        // Clear item selection if clipboard is not aligned
+        if (!!lastClicked) {
+          const selectedItem = items.filter(item => item.id === lastClicked)[0];
+          if (selectedItem.content !== text) {
+            setLastClicked(null);
+          }
+        }
+      });
+    }, 100);
+    return () => {
+      clearInterval(interval);
+    };
+  });
 
   const addValue = (description: string, content: string) => {
     const timestamp = new Date().toISOString();
@@ -109,7 +119,7 @@ export default function App() {
           setClicked={setLastClicked}
           removeItem={removeItem}
         />
-        <pre>{JSON.stringify({ lastClicked, items }, null, 2)}</pre>
+        <pre>{JSON.stringify({ lastClicked, items, currentClipboard }, null, 2)}</pre>
       </Body>
       <Footer>
         <AddItemForm addItem={addValue} />
