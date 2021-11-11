@@ -1,83 +1,100 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 
-async function copyToClipboard(content: string): Promise<void> {
-  return navigator.clipboard.writeText(content);
-}
+import AddItemForm from "./components/AddItemForm";
+import CopyableItems from "./components/CopyableItems";
+import { ItemData, ItemId } from "./domain";
 
-type ItemId = string;
-interface Item {
-  id: ItemId;
-  description: string;
-  text: string;
-}
-const MOCK_VALUES: Item[] = [
+const MOCK_DATA: ItemData[] = [
   {
     id: "random-hash1",
     description: "Algo Q1",
-    text: "Algo Q1 text",
+    content: "Algo Q1 text",
+    index: 1,
   },
   {
     id: "random-hash2",
     description: "Algo Q2",
-    text: "Algo Q2 text",
+    content: "Algo Q2 text",
+    index: 0,
   },
 ];
 
-const Item = styled.div`
-  margin: 1rem 0.5rem;
-  padding: 1rem;
-  border-radius: 0.4rem;
-  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.15);
+enum SortAction {
+  KeepOrder = -1,
+  SwapOrder = 1,
+}
 
-  &:hover {
-    background-color: #ddd;
-    cursor: pointer;
+function itemSorter(a: ItemData, b: ItemData): number {
+  /*
+      > 0 --> b, a
+      < 0 --> a, b
+    === 0 --> (do nothing)
+  */
+  if (a.index < b.index) {
+    return SortAction.KeepOrder;
   }
-  &:active {
-    background-color: #ccc;
-    cursor: pointer;
-  }
-`;
-const ClickedItem = styled(Item)`
-  border: solid 1px rgba(0, 0, 0, 0.5);
-`;
-interface ClickMeButtonProps {
-  item: Item;
-  clicked: boolean;
-  markAsLastClicked: () => void;
+  return SortAction.SwapOrder;
 }
-function ItemComponent({ item, clicked, markAsLastClicked }: ClickMeButtonProps) {
-  const handleClick = () => {
-    markAsLastClicked();
-    copyToClipboard(item.text);
-  };
-  if (clicked) {
-    return <ClickedItem onClick={() => handleClick()}>{item.description}</ClickedItem>;
-  }
-  return <Item onClick={() => handleClick()}>{item.description}</Item>;
-}
+
+const Page = styled.div`
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  justify-content: flex-start;
+
+  /* to occupy the whole space */
+  width: 100%;
+  height: 100vh;
+`;
+
+const Body = styled.div`
+  order: 0;
+  flex-grow: 1;
+  flex-shrink: 1;
+  overflow-y: scroll;
+  scrollbar-width: thin;
+`;
+
+const Footer = styled.div`
+  flex-grow: 0;
+  flex-shrink: 0;
+  order: 1;
+`;
 
 export default function App() {
-  const [values, setValues] = useState(MOCK_VALUES);
+  const [items, setItems] = useState([]);
   const [lastClicked, setLastClicked] = useState<ItemId | null>(null);
 
-  const markAsLastClicked = (valueId: ItemId) => {
-    setLastClicked(valueId);
+  const addValue = (description: string, content: string) => {
+    const timestamp = new Date().toISOString();
+    const maxIndex = items.length - 1;
+    const newItem: ItemData = {
+      id: timestamp,
+      description,
+      content,
+      index: maxIndex + 1,
+    };
+    const updatedValues: ItemData[] = [...items, newItem];
+    setItems(updatedValues);
   };
 
+  const itemsSortedByIndex = items.concat().sort(itemSorter);
+
   return (
-    <div>
-      <p>Click any below to copy them to the clipboard</p>
-      {values.map(item => (
-        <ItemComponent
-          key={item.id}
-          item={item}
-          clicked={item.id === lastClicked}
-          markAsLastClicked={() => markAsLastClicked(item.id)}
+    <Page>
+      <Body>
+        <p>Click any below to copy them to the clipboard</p>
+        <CopyableItems
+          items={itemsSortedByIndex}
+          clicked={lastClicked}
+          setClicked={id => setLastClicked(id)}
         />
-      ))}
-      <pre>{JSON.stringify({ lastClicked }, null, 2)}</pre>
-    </div>
+        {/* <pre>{JSON.stringify({ lastClicked, items }, null, 2)}</pre> */}
+      </Body>
+      <Footer>
+        <AddItemForm addItem={addValue} />
+      </Footer>
+    </Page>
   );
 }
