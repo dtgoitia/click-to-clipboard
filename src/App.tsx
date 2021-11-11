@@ -82,15 +82,21 @@ export default function App() {
       content,
       index: maxIndex + 1,
     };
-    const updatedValues: ItemData[] = [...items, newItem];
-    setItems(updatedValues);
+    const updatedItems: ItemData[] = [...items, newItem].sort(itemSorter);
+    setItems(updatedItems);
   };
 
-  const itemsSortedByIndex = items.concat().sort(itemSorter);
+  const removeItem = (id: ItemId) => {
+    const updatedItems: ItemData[] = items
+      .filter(item => item.id !== id)
+      .sort(itemSorter);
+
+    setItems(updatedItems);
+  };
 
   useEffect(() => {
     // back-up stored items
-    repository.writeItems(itemsSortedByIndex);
+    repository.writeItems(items);
   }, [items]);
 
   return (
@@ -98,11 +104,12 @@ export default function App() {
       <Body>
         <p>Click any below to copy them to the clipboard</p>
         <CopyableItems
-          items={itemsSortedByIndex}
+          items={items}
           clicked={lastClicked}
-          setClicked={id => setLastClicked(id)}
+          setClicked={setLastClicked}
+          removeItem={removeItem}
         />
-        {/* <pre>{JSON.stringify({ lastClicked, items }, null, 2)}</pre> */}
+        <pre>{JSON.stringify({ lastClicked, items }, null, 2)}</pre>
       </Body>
       <Footer>
         <AddItemForm addItem={addValue} />
