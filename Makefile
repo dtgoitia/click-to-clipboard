@@ -10,6 +10,7 @@ run:
 	# scripts/clean_up_changes_to_firefox_profile.sh $(FIREFOX_PROFILE_PATH)
 
 build:
+	find . -type d -wholename "\.\/dist" | xargs rm -rf
 	npm run build
 
 test:
