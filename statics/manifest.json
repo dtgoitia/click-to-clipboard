@@ -1,0 +1,13 @@
+{
+  "manifest_version": 2,
+  "name": "Click to clipboard",
+  "description": "Browser extension to copy predefined texts to clipboard on a click.",
+  "version": "1.0",
+  "homepage_url": "https://github.com/mdn/webextensions-examples/tree/master/context-menu-copy-link-with-types",
+
+  "background": {
+    "scripts": ["index.js"]
+  },
+
+  "permissions": ["activeTab", "contextMenus", "clipboardWrite"]
+}

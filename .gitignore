@@ -1,0 +1,5 @@
+_transpiled_js/
+build/
+dist/
+
+test-firefox-profile/

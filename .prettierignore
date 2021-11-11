@@ -1,0 +1,8 @@
+node_modules/
+test-firefox-profile/
+
+tsconfig.json
+
+# Ignore artifacts
+build/
+dist/
