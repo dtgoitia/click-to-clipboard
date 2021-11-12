@@ -15,11 +15,12 @@ export function createAppContainer(): string {
   const styleTag = document.createElement("style");
   styleTag.innerHTML = `
     #${id} {
-      background-color: #fff;
+      background-color: rgba(255,255,255,0.1);
       position: fixed;
+      border-radius: 0.55rem;
       top: 45px;
       right: 0;
-      width: 5rem;
+      max-width: 10rem;
       height: 300px;
       /* overflow-x: auto; */
       /* overflow-y: auto; */

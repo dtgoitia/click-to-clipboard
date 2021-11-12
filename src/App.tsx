@@ -6,6 +6,7 @@ import AddItemForm from "./components/AddItemForm";
 import CopyableItems from "./components/CopyableItems";
 import { ItemData, ItemId } from "./domain";
 import repository from "./persistence";
+import { disableTextSelection } from "./style";
 
 enum SortAction {
   KeepOrder = -1,
@@ -24,7 +25,11 @@ function itemSorter(a: ItemData, b: ItemData): number {
   return SortAction.SwapOrder;
 }
 
+const WIDTH_OF_STUDIO_HEADER = "45px";
+const WIDTH_OF_STUDIO_FOOTER = "45px";
 const Page = styled.div`
+  font-family: Sans;
+
   display: flex;
   flex-direction: column;
   flex-wrap: nowrap;
@@ -32,21 +37,24 @@ const Page = styled.div`
 
   /* to occupy the whole space */
   width: 100%;
-  height: 100vh;
+  height: calc(100vh - ${WIDTH_OF_STUDIO_HEADER} - ${WIDTH_OF_STUDIO_FOOTER});
 `;
 
 const Body = styled.div`
-  order: 0;
+  order: 1;
   flex-grow: 1;
   flex-shrink: 1;
-  overflow-y: scroll;
+  overflow-y: auto; /* show scroll only if overflows */
   scrollbar-width: thin;
+
+  ${disableTextSelection}
 `;
 
-const Footer = styled.div`
+const Header = styled.div`
   flex-grow: 0;
   flex-shrink: 0;
-  order: 1;
+  order: 0;
+  padding: 0.5rem;
 `;
 
 export default function App() {
@@ -60,24 +68,24 @@ export default function App() {
     });
   }, []);
 
-  const readClipboardAsync = async () => {
-    const text = await readClipboard();
-    if (text === currentClipboard) {
-      return;
-    }
-    setCurrentClipboard(text);
-
-    // Clear item selection if clipboard is not aligned
-    if (!!lastClicked) {
-      const selectedItem = items.filter(item => item.id === lastClicked)[0];
-      if (selectedItem.content !== text) {
-        setLastClicked(null);
-      }
-    }
-  };
-
   useEffect(() => {
-    const interval = setInterval(readClipboardAsync, 100);
+    const interval = setInterval(() => {
+      readClipboard().then(text => {
+        if (text === currentClipboard) {
+          return;
+        }
+
+        setCurrentClipboard(text);
+
+        // Clear item selection if clipboard is not aligned
+        if (!!lastClicked) {
+          const selectedItem = items.filter(item => item.id === lastClicked)[0];
+          if (selectedItem.content !== text) {
+            setLastClicked(null);
+          }
+        }
+      });
+    }, 100);
     return () => {
       clearInterval(interval);
     };
@@ -110,19 +118,18 @@ export default function App() {
 
   return (
     <Page>
+      <Header>
+        <AddItemForm addItem={addValue} />
+      </Header>
       <Body>
-        <p>Click any below to copy them to the clipboard</p>
         <CopyableItems
           items={items}
           clicked={lastClicked}
           setClicked={setLastClicked}
           removeItem={removeItem}
         />
-        <pre>{JSON.stringify({ lastClicked, items, currentClipboard }, null, 2)}</pre>
+        {/* <pre>{JSON.stringify({ lastClicked, items, currentClipboard }, null, 2)}</pre> */}
       </Body>
-      <Footer>
-        <AddItemForm addItem={addValue} />
-      </Footer>
     </Page>
   );
 }

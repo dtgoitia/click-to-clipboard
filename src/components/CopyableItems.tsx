@@ -4,10 +4,12 @@ import styled from "styled-components";
 import { copyToClipboard } from "../clipboard";
 import { ItemData, ItemId } from "../domain";
 
+const highlighted = "#ddd";
+
 const Item = styled.div`
-  margin: 1rem 0.5rem;
   border-radius: 0.4rem;
   box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.15);
+  background-color: white;
 
   display: flex;
   flex-direction: row;
@@ -15,23 +17,23 @@ const Item = styled.div`
   justify-content: space-between;
 
   &:hover {
-    background-color: #ddd;
+    background-color: ${highlighted};
     cursor: pointer;
   }
   &:active {
-    background-color: #ccc;
+    background-color: #aaa;
     cursor: pointer;
   }
 `;
 const ClickedItem = styled(Item)`
-  border: solid 1px rgba(0, 0, 0, 0.5);
+  background-color: ${highlighted};
 `;
 const DeleteButton = styled.div`
-  order: 0;
+  order: 1;
   flex-grow: 0;
   flex-shrink: 0;
 
-  padding: 1rem;
+  padding: 0.5rem;
 
   background-color: rgba(255, 0, 0, 0.3);
   &:hover {
@@ -42,12 +44,13 @@ const DeleteButton = styled.div`
   }
 `;
 const ItemText = styled.div`
-  order: 1;
+  order: 0;
   flex-grow: 1;
   flex-shrink: 1;
 
   padding: 1rem;
 `;
+
 interface ItemComponentProps {
   item: ItemData;
   clicked: boolean;
@@ -77,10 +80,20 @@ function ItemComponent({
   return <Item>{...itemComponents}</Item>;
 }
 
-const Container = styled.div`
+const ItemList = styled.div`
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  row-gap: 0.5rem;
+
   padding: 0.5rem;
 `;
-const ItemList = styled.div``;
+
+const Hint = styled.div`
+  color: white;
+  padding: 0.5rem;
+  text-align: center;
+`;
 
 interface CopyableItemsProps {
   items: ItemData[];
@@ -95,21 +108,28 @@ export default function CopyableItems({
   removeItem,
 }: CopyableItemsProps) {
   if (items.length === 0) {
-    return <p>Add an item below :)</p>;
+    return (
+      <Hint>
+        Hit
+        <br />
+        <b>+</b>
+        <br /> to add
+        <br /> an item
+        <br /> :)
+      </Hint>
+    );
   }
   return (
-    <Container>
-      <ItemList>
-        {items.map(item => (
-          <ItemComponent
-            key={item.id}
-            item={item}
-            clicked={item.id === clicked}
-            markAsLastClicked={() => setClicked(item.id)}
-            removeItem={() => removeItem(item.id)}
-          />
-        ))}
-      </ItemList>
-    </Container>
+    <ItemList>
+      {items.map(item => (
+        <ItemComponent
+          key={item.id}
+          item={item}
+          clicked={item.id === clicked}
+          markAsLastClicked={() => setClicked(item.id)}
+          removeItem={() => removeItem(item.id)}
+        />
+      ))}
+    </ItemList>
   );
 }
