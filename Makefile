@@ -16,6 +16,9 @@ build:
 	find . -type d -wholename "\.\/dist" | xargs rm -rf
 	npm run build
 
+build-for-chrome:
+	./scripts/build-for-chrome.sh
+
 test:
 	@echo "Nothing set yet, you probably need selenium"
 

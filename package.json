@@ -6,7 +6,7 @@
   "scripts": {
     "dev:extension": "webpack --config=./webpack.config/dev-extension.ts",
     "dev:webapp": "webpack serve --config=./webpack.config/dev-web.ts",
-    "build": "webpack",
+    "build": "webpack --config=./webpack.config/build.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
