@@ -1,7 +1,7 @@
-import * as path from "path";
-import * as webpack from "webpack";
-import WebExtPlugin from "web-ext-plugin";
 import CopyPlugin from "copy-webpack-plugin";
+import * as path from "path";
+import WebExtPlugin from "web-ext-plugin";
+import * as webpack from "webpack";
 // in case you run into any typescript error when configuring `devServer`
 import "webpack-dev-server";
 
@@ -11,7 +11,9 @@ const firefoxProfilePath = process.env["FIREFOX_PROFILE_PATH"];
 
 const config: webpack.Configuration = {
   mode: "production",
-  entry: "./src/index.tsx",
+  entry: {
+    index: "./src/index.tsx",
+  },
   module: {
     rules: [
       {
@@ -26,7 +28,7 @@ const config: webpack.Configuration = {
   },
   output: {
     path: transpiledJsPath,
-    filename: "index.js",
+    filename: "[name].js",
     clean: true, // clean before each build
   },
   optimization: {
@@ -41,6 +43,13 @@ const config: webpack.Configuration = {
       target: "firefox-desktop",
       firefox: "firefoxdeveloperedition",
       firefoxProfile: firefoxProfilePath,
+      keepProfileChanges: true,
+      artifactsDir: builtExtensionPath,
+      buildPackage: true,
+    }),
+    new WebExtPlugin({
+      sourceDir: transpiledJsPath,
+      target: "chromium",
       keepProfileChanges: true,
       artifactsDir: builtExtensionPath,
       buildPackage: true,

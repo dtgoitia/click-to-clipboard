@@ -6,22 +6,12 @@
   "version": "1.0",
   "homepage_url": "https://github.com/dtgoitia/click-to-clipboard",
 
-  "background": {
-    "scripts": ["index.js"]
-  },
-
-  "sidebar_action": {
-    "default_icon": "icon.png",
-    "default_panel": "sidebar.html"
-  },
-
-  "commands": {
-    "_execute_sidebar_action": {
-      "suggested_key": {
-        "default": "Ctrl+E"
-      }
+  "content_scripts": [
+    {
+      "matches": ["*://*/*"],
+      "js": ["index.js"],
+      "run_at": "document_end"
     }
-  },
-
-  "permissions": ["clipboardWrite", "storage", "clipboardRead"]
+  ],
+  "permissions": ["clipboardWrite", "storage", "clipboardRead", "activeTab"]
 }
