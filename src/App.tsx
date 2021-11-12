@@ -60,24 +60,24 @@ export default function App() {
     });
   }, []);
 
+  const readClipboardAsync = async () => {
+    const text = await readClipboard();
+    if (text === currentClipboard) {
+      return;
+    }
+    setCurrentClipboard(text);
+
+    // Clear item selection if clipboard is not aligned
+    if (!!lastClicked) {
+      const selectedItem = items.filter(item => item.id === lastClicked)[0];
+      if (selectedItem.content !== text) {
+        setLastClicked(null);
+      }
+    }
+  };
+
   useEffect(() => {
-    const interval = setInterval(() => {
-      readClipboard().then(text => {
-        if (text === currentClipboard) {
-          return;
-        }
-
-        setCurrentClipboard(text);
-
-        // Clear item selection if clipboard is not aligned
-        if (!!lastClicked) {
-          const selectedItem = items.filter(item => item.id === lastClicked)[0];
-          if (selectedItem.content !== text) {
-            setLastClicked(null);
-          }
-        }
-      });
-    }, 100);
+    const interval = setInterval(readClipboardAsync, 100);
     return () => {
       clearInterval(interval);
     };
