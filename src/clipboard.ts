@@ -6,6 +6,11 @@ export async function copyToClipboard(content: string): Promise<void> {
 }
 
 export async function readClipboard(): Promise<string> {
+  if (!document.hasFocus()) {
+    // The Clipboard API only works if `Document` is focused.
+    return;
+  }
+
   if (isFirefox) {
     return Promise.resolve("Firefox does not support read clipboard API yet");
   }
