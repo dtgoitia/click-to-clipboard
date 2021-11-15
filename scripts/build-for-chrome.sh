@@ -9,8 +9,8 @@ npm run build
 
 # Change manifest to only be available at the allowed URLs
 #  *://*/*  -->  https://karatstudio.karat.io/pad/*
-text_to_replace="\*:\/\/\*\/\*"
-allowed_url="https:\/\/karatstudio\.karat\.io\/pad\/\*"  # The extension will only appears when the user navigates to this URL
+text_to_replace="\"\*:\/\/\*\/\*\""
+allowed_url="\"https:\/\/karatstudio\.karat\.io\/pad\/\*\", \"https:\/\/karatstudio\.karat\.io\/interview\/\*\""  # The extension will only appears when the user navigates to this URL
 manifest_file="${JS_EXTENSION_DIR}/manifest.json"
 sed -i "s/${text_to_replace}/${allowed_url}/g" $manifest_file
 
