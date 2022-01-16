@@ -1,6 +1,6 @@
 import React from "react";
 import { useState } from "react";
-import { Button, InputOnChangeData, Form } from "semantic-ui-react";
+import { Button, InputOnChangeData, Form, TextAreaProps } from "semantic-ui-react";
 import styled from "styled-components";
 
 import { disableTextSelection } from "../style";
@@ -38,6 +38,13 @@ const IconContainer = styled.div`
   ${disableTextSelection}
 `;
 
+const StyledTextArea = styled(Form.TextArea)`
+  & textarea {
+    max-height: 1rem;
+    max-width: calc(100% - 0.5rem);
+  }
+`;
+
 const AddItemForm = ({ addItem }: AddItemFormProps) => {
   const [unfolded, unfold] = useState<boolean>(false);
   const [description, setDescription] = useState<string>(EMPTY_FIELD);
@@ -59,36 +66,29 @@ const AddItemForm = ({ addItem }: AddItemFormProps) => {
     unfold(false);
   };
 
-  const handleChange = (_: any, { name, value }: InputOnChangeData): void => {
-    switch (name) {
-      case "description":
-        setDescription(value);
-        break;
-      case "content":
-        setContent(value);
-        break;
-    }
+  const handleDescriptionChange = (_: any, { value }: InputOnChangeData): void => {
+    setDescription(value);
+  };
+
+  const handleContentChange = (_: any, { value }: TextAreaProps): void => {
+    setContent(value as string);
   };
 
   return (
     <Container>
       <Form onSubmit={() => handleSubmit()}>
-        <Form.Field>
-          <Form.Input
-            placeholder="description"
-            name="description"
-            value={description}
-            onChange={handleChange}
-          />
-        </Form.Field>
-        <Form.Field>
-          <Form.Input
-            placeholder="content"
-            name="content"
-            value={content}
-            onChange={handleChange}
-          />
-        </Form.Field>
+        <Form.Input
+          placeholder="description"
+          name="description"
+          value={description}
+          onChange={handleDescriptionChange}
+        />
+        <StyledTextArea
+          placeholder="content"
+          name="content"
+          value={content}
+          onChange={handleContentChange}
+        />
         <Form.Field control={Button}>Add item</Form.Field>
       </Form>
     </Container>
