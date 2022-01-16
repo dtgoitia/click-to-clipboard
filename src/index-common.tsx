@@ -20,7 +20,7 @@ export function createAppContainer(): string {
       border-radius: 0.55rem;
       top: 45px;
       right: 0;
-      max-width: 10rem;
+      max-width: 12rem;
       height: 300px;
       /* overflow-x: auto; */
       /* overflow-y: auto; */
