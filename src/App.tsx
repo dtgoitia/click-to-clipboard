@@ -4,7 +4,7 @@ import styled from "styled-components";
 import { readClipboard } from "./clipboard";
 import AddItemForm from "./components/AddItemForm";
 import CopyableItems from "./components/CopyableItems";
-import { ItemData, ItemId } from "./domain";
+import { ItemData, ItemId, StoredItemData } from "./domain";
 import repository from "./persistence";
 import { disableTextSelection } from "./style";
 
@@ -57,14 +57,34 @@ const Header = styled.div`
   padding: 0.5rem;
 `;
 
+function ensureItemsHaveId(storedItems: StoredItemData[]): ItemData[] {
+  // Sequence order will be preserved
+  return storedItems.map((storedItem: StoredItemData, i: number) => {
+    const item: ItemData = {
+      id: Date.now() + i,
+      description: storedItem.description,
+      content: storedItem.content,
+      index: i,
+    };
+    return item;
+  });
+}
 export default function App() {
   const [items, setItems] = useState<ItemData[]>([]);
   const [lastClicked, setLastClicked] = useState<ItemId | null>(null);
   const [currentClipboard, setCurrentClipboard] = useState<string>("");
 
   useEffect(() => {
+    console.debug("Checking if there are any items stored...");
     repository.readItems().then(storedItems => {
-      setItems(storedItems);
+      console.debug("Stored items found, indexing...");
+      const indexedStoredItems = ensureItemsHaveId(storedItems);
+      setItems(indexedStoredItems);
+
+      console.debug("Storing re-indexed items...");
+      repository.writeItems(indexedStoredItems).then(_ => {
+        console.debug("Re-indexed items stored.");
+      });
     });
   }, []);
 
@@ -104,6 +124,7 @@ export default function App() {
   };
 
   const removeItem = (id: ItemId) => {
+    console.debug(`Removing item ${id}`);
     const updatedItems: ItemData[] = items
       .filter(item => item.id !== id)
       .sort(itemSorter);
